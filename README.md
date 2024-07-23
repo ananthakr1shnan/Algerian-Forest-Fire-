@@ -2,7 +2,7 @@
 
 ## Introduction
 
-This project leverages a dataset from UCI on Algerian Forest Fires, encompassing data from two regions in Algeria: Bejaia and Sidi Bel-Abbes. The dataset spans from June 2012 to September 2012. Our objective is to explore the application of Machine Learning algorithms to predict forest fires in these regions based on specific weather features.
+This project usess a dataset from UCI on Algerian Forest Fires, including data from two regions in Algeria: Bejaia and Sidi Bel-Abbes. The dataset spans from June 2012 to September 2012. My objective is to explore the application of Machine Learning algorithms to predict forest fires in these regions based on specific weather features.
 
 ## Data Set Information
 
@@ -52,3 +52,11 @@ For regression analysis, the Fire Weather Index (FWI) was selected as the depend
 ### Classification
 
 For classification, the Classes feature was the dependent variable, representing a binary classification (fire, not fire).
+
+### Flask application
+
+To run flask app
+
+```bash
+python application.py
+
