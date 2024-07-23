@@ -1,4 +1,4 @@
-# Algerian Forest Fires
+# Algerian Forest Fires Prediction
 
 ## Introduction
 
