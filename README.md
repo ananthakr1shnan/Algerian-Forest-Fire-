@@ -1,4 +1,4 @@
-# Algerian Forest Fires - FWI Prediction
+# Algerian Forest Fires -FWI Prediction
 
 ## Introduction
 
