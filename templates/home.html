@@ -1,21 +1,120 @@
-<html>
-    <body>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FWI Prediction</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+</head>
+<body>
+    <header>
+        <h1>FWI Prediction</h1>
+    </header>
+    <div class="container">
         <div class="login">
-            <h1>FWI PREDICTION</h1>
-
-            <form action="{{url_for('predict_datapoint')}}" method="post">
-                <input type="text" name="Temperature" placeholder="Temperature" required="required" /><br>
-                <input type="text" name="RH" placeholder="RH" required="required" /><br>
-                <input type="text" name="Ws" placeholder="Ws" required="required" /><br>
-                <input type="text" name="Rain" placeholder="Rain" required="required" /><br>
-                <input type="text" name="FFMC" placeholder="FFMC" required="required" /><br>
-                <input type="text" name="DMC" placeholder="DMC" required="required" /><br>
-                <input type="text" name="ISI" placeholder="ISI" required="required" /><br>
-                <input type="text" name="Classes" placeholder="Classes" required="required" /><br>
-                <input type="text" name="Region" placeholder="Region" required="required" /><br>
-               
+            <form id="predictForm" action="{{ url_for('predict_datapoint') }}" method="post">
+                <div class="input-group">
+                    <label for="Temperature">Temperature (22°C - 42°C)</label>
+                    <input type="range" id="Temperature" name="Temperature" min="22" max="42" step="0.1" />
+                    <span id="TemperatureValue">32°C</span>
+                </div>
+                <div class="input-group">
+                    <label for="RH">RH (%) (21% - 90%)</label>
+                    <input type="range" id="RH" name="RH" min="21" max="90" step="1" />
+                    <span id="RHValue">55%</span>
+                </div>
+                <div class="input-group">
+                    <label for="Ws">Wind Speed (km/h) (6 km/h - 29 km/h)</label>
+                    <input type="range" id="Ws" name="Ws" min="6" max="29" step="1" />
+                    <span id="WsValue">17 km/h</span>
+                </div>
+                <div class="input-group">
+                    <label for="Rain">Rain (mm) (0 mm - 16.8 mm)</label>
+                    <input type="range" id="Rain" name="Rain" min="0" max="16.8" step="0.1" />
+                    <span id="RainValue">8 mm</span>
+                </div>
+                <div class="input-group">
+                    <label for="FFMC">FFMC (28.6 - 92.5)</label>
+                    <input type="range" id="FFMC" name="FFMC" min="28.6" max="92.5" step="0.1" />
+                    <span id="FFMCValue">60</span>
+                </div>
+                <div class="input-group">
+                    <label for="DMC">DMC (1.1 - 65.9)</label>
+                    <input type="range" id="DMC" name="DMC" min="1.1" max="65.9" step="0.1" />
+                    <span id="DMCValue">30</span>
+                </div>
+                <div class="input-group">
+                    <label for="ISI">ISI (0 - 18.5)</label>
+                    <input type="range" id="ISI" name="ISI" min="0" max="18.5" step="0.1" />
+                    <span id="ISIValue">10</span>
+                </div>
+             <div class="input-group">
+                    <label>Classes</label>
+                    <div>
+                        <input type="radio" id="Classes0" name="Classes" value="0" checked>
+                        <label for="Classes0">Not Fire</label>
+                        <input type="radio" id="Classes1" name="Classes" value="1">
+                        <label for="Classes1">Fire</label>
+                    </div>
+                </div>
+                <div class="input-group">
+                    <label>Region</label>
+                    <div>
+                        <input type="radio" id="Region0" name="Region" value="0" checked>
+                        <label for="Region0">Bejaia</label>
+                        <input type="radio" id="Region1" name="Region" value="1">
+                        <label for="Region1">Sidi Bel-Abbes</label>
+                    </div>
+                </div>
                 <button type="submit" class="btn_class">Predict</button>
             </form>
-            <h2>FWI Predicion is {{results}}</h2>
-    </body>
+            <h2 id="predictionResult" class="endst">FWI Prediction is: {{ fwi_value }}</h2>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            function updateSliderValue(slider) {
+                const valueSpan = document.getElementById(slider.id + 'Value');
+                if (valueSpan) {
+                    valueSpan.textContent = slider.value + 
+                        (slider.id === 'Temperature' ? '°C' :
+                        slider.id === 'RH' ? '%' :
+                        slider.id === 'Rain' ? ' mm' : 
+                        (slider.id === 'Ws' ? ' km/h' : ''));
+                }
+            }
+
+            document.querySelectorAll('input[type="range"]').forEach(slider => {
+                const storedValue = localStorage.getItem(slider.id);
+                if (storedValue !== null) {
+                    slider.value = storedValue;
+                    updateSliderValue(slider);
+                }
+                slider.addEventListener('input', function() {
+                    updateSliderValue(this); 
+                });
+            });
+
+            // Restore radio button values from localStorage
+            ['Classes', 'Region'].forEach(radioGroup => {
+                const storedValue = localStorage.getItem(radioGroup);
+                if (storedValue !== null) {
+                    document.querySelector(`input[name="${radioGroup}"][value="${storedValue}"]`).checked = true;
+                }
+            });
+
+            document.getElementById('predictForm').addEventListener('submit', function() {
+                document.querySelectorAll('input[type="range"]').forEach(slider => {
+                    localStorage.setItem(slider.id, slider.value);
+                });
+
+                ['Classes', 'Region'].forEach(radioGroup => {
+                    const selectedValue = document.querySelector(`input[name="${radioGroup}"]:checked`).value;
+                    localStorage.setItem(radioGroup, selectedValue);
+                });
+            });
+        });
+    </script>
+</body>
 </html>
